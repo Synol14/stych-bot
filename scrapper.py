@@ -10,7 +10,7 @@ planning_url = "http://www.stych.fr/elearning/planning-conduite/get-planning-pro
 cookies = {"remember_me" : creds.remember_me}
 resp = requests.get(planning_url, cookies=cookies)
 
-pings = "@everyone"
+mentions = "@everyone"
 
 maxLogLine = 288 #60*24/5 number of 5 min per day
 
@@ -62,7 +62,7 @@ if len(new_creneaux) > 0:
         moniteur = c[3]
         lieu = lieux[c[5]]
         data = {
-        "content": pings,
+        "content": mentions,
         "tts": False,
         "embeds": [
             {
