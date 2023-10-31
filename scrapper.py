@@ -10,8 +10,9 @@ planning_url = "http://www.stych.fr/elearning/planning-conduite/get-planning-pro
 cookies = {"remember_me" : creds.remember_me}
 resp = requests.get(planning_url, cookies=cookies)
 
-maxLogLine = 288 #60*24/5 nombre d'update par jour
+pings = "@everyone"
 
+maxLogLine = 288 #60*24/5 number of 5 min per day
 
 myMoniteur = open("moniteur.txt", "r").read().split("\n")
 
@@ -26,6 +27,8 @@ lieux = {d['id_liste_adresse_cours']: d['adresse'] for d in lieux}
 
 with open("creneaux.txt", "r", encoding='utf-8') as f:
     old_creneaux = f.read()
+    if not old_creneaux: 
+       old_creneaux = []
     old_creneaux = json.loads(old_creneaux)
 
 new_creneaux = [c for c in creneaux if c[:-2] not in old_creneaux]
@@ -53,12 +56,13 @@ if len(new_creneaux) > 0:
     for c in new_creneaux:
         print(c)
         jour = jours[int(c[4])]
+        heure = c[1][:-3] + " - " + c[2][:-3]
         date = c[0][-2:]
         date_mois = mois[int(c[0][5:6])]
         moniteur = c[3]
         lieu = lieux[c[5]]
         data = {
-        "content": "",
+        "content": pings,
         "tts": False,
         "embeds": [
             {
@@ -69,6 +73,10 @@ if len(new_creneaux) > 0:
             "fields": [
                 {
                 "name": f"Date : **{jour} {date} {date_mois}**",
+                "value": "\u200B"
+                },
+                {
+                "name": f"Heure : **{heure}**",
                 "value": "\u200B"
                 },
                 {
@@ -96,6 +104,5 @@ if len(new_creneaux) > 0:
 
         resp = requests.post(discord_url, json=data, headers=headers)
         print(resp.status_code)
-
-        with open("creneaux.txt", "w", encoding='utf-8') as f:
-            f.write(json.dumps([c[:-2] for c in creneaux], ensure_ascii=False))
+with open("creneaux.txt", "w", encoding='utf-8') as f:
+    f.write(json.dumps([c[:-2] for c in creneaux], ensure_ascii=False))
