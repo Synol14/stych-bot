@@ -24,7 +24,7 @@ lieux = re.search('"rowsPointDeCours":(\[.+\]),"rowsProposition"', resp.text)
 lieux = json.loads(lieux.group(1))
 lieux = {d['id_liste_adresse_cours']: d['adresse'] for d in lieux}
 
-with open("creneaux.txt", "w+", encoding='utf-8') as f:
+with open("creneaux.txt", "r", encoding='utf-8') as f:
     old_creneaux = f.read()
     old_creneaux = json.loads(old_creneaux)
 
@@ -32,7 +32,7 @@ new_creneaux = [c for c in creneaux if c[:-2] not in old_creneaux]
 
 with open("log.txt", "r", encoding='utf-8') as f:
   log = f.read().split("\n")
-  
+
 with open("log.txt", "w", encoding='utf-8') as f:
   f.write(datetime.datetime.now().strftime("%d/%m/%y %H:%M:%S") + f" - {len(creneaux)}\n")
   for line in log[-maxLogLine+1:-1]:
